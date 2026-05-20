@@ -1,7 +1,9 @@
 type BasicItem = {
   id: string;
+  url?: string;
   title: string | null;
   text: string;
+  rawMarkdown?: string | null;
 };
 
 const INTENT_SYSTEM_PROMPT = `You turn vague research topics into precise Google search queries for a web research Actor.
@@ -33,6 +35,23 @@ Return only JSON with this shape:
 {
   "items": [
     { "id": "string", "label": "relevant | borderline | irrelevant", "reason": "string" }
+  ]
+}`;
+
+const SUMMARY_SYSTEM_PROMPT = `You summarize web research results for a coding agent.
+
+Write concise, factual summaries based only on the provided source text.
+
+Rules:
+- Include specific facts, dates, numbers, names, product launches, research findings, or claims when present.
+- If the source text is mostly navigation, forms, or boilerplate, say that useful content was limited.
+- Do not invent details.
+- Keep each summary to 2 or 3 sentences.
+
+Return only JSON with this shape:
+{
+  "items": [
+    { "id": "string", "summary": "string" }
   ]
 }`;
 
@@ -99,8 +118,10 @@ export async function filterResults<T extends BasicItem>(items: T[], topic: stri
   try {
     const compactItems = items.map((item) => ({
       id: item.id,
+      url: item.url,
       title: item.title,
-      text: item.text.replace(/\s+/g, ' ').trim().slice(0, 200),
+      text: item.text.replace(/\s+/g, ' ').trim().slice(0, 1000),
+      rawMarkdown: (item.rawMarkdown || '').replace(/\s+/g, ' ').trim().slice(0, 4000),
     }));
 
     const data = await callOpenAIJson<{ items?: Array<{ id?: string; label?: string }> }>(
@@ -120,6 +141,40 @@ ${JSON.stringify(compactItems, null, 2)}`,
     );
 
     return keepIds.size > 0 ? items.filter((item) => keepIds.has(item.id)) : items;
+  } catch {
+    return items;
+  }
+}
+
+export async function summarizeResults<T extends BasicItem>(items: T[], topic: string, apiKey: string): Promise<T[]> {
+  try {
+    const compactItems = items.map((item) => ({
+      id: item.id,
+      url: item.url,
+      title: item.title,
+      text: item.text.replace(/\s+/g, ' ').trim().slice(0, 1000),
+      rawMarkdown: (item.rawMarkdown || '').replace(/\s+/g, ' ').trim().slice(0, 6000),
+    }));
+
+    const data = await callOpenAIJson<{ items?: Array<{ id?: string; summary?: string }> }>(
+      apiKey,
+      SUMMARY_SYSTEM_PROMPT,
+      `Topic: ${topic}
+
+Items:
+${JSON.stringify(compactItems, null, 2)}`,
+    );
+
+    const summaries = new Map(
+      (data.items || [])
+        .filter((item) => item.id && item.summary)
+        .map((item) => [item.id as string, String(item.summary).trim()]),
+    );
+
+    return items.map((item) => ({
+      ...item,
+      text: summaries.get(item.id) || item.text,
+    }));
   } catch {
     return items;
   }

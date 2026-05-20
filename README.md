@@ -98,7 +98,7 @@ If any command fails, fix it before the workshop or raise your hand when you arr
 | [01](./01-setup-and-explore.md) | Set up and explore RAG Web Browser | ~10 min |
 | [02](./02-build-your-actor.md) | Build your Actor | ~30 min |
 | [03](./03-add-smart-search.md) | Add smart search with an LLM | ~15 min |
-| [04](./04-add-filtering.md) | Add relevance filtering | ~15 min |
+| [04](./04-add-filtering.md) | Add filtering and summaries | ~15 min |
 | [05](./05-deploy.md) | Deploy to Apify cloud | ~10 min |
 
 The `reference/` folder contains copy-paste helpers for parts that should be exact, including the RAG Web Browser input settings and LLM calls.

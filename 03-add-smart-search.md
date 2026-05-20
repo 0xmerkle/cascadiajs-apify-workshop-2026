@@ -76,16 +76,12 @@ Wire it into src/main.ts:
 9. If interpretTopic throws an error or no API key is set, fall back to using the literal topic as the only query
 ```
 
-Your RAG call should still look like this:
+Your RAG call should still use the helper from Lesson 2:
 
 ```ts
-const run = await client.actor('apify/rag-web-browser').call({
-  query,
-  maxResults: 3,
-  outputFormats: ['markdown'],
-  requestTimeoutSecs: 40,
-  scrapingTool: 'raw-http',
-});
+const run = await client.actor('apify/rag-web-browser').call(
+  createRagWebBrowserInput(query, 3),
+);
 ```
 
 ## Step 4: Set your key and test

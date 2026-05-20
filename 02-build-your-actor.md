@@ -99,19 +99,7 @@ BEHAVIOR:
 
    RAG Web Browser results are useful, but raw. Some pages load cleanly and have markdown. Some pages fail to load but still have a useful Google searchResult. Some pages have markdown full of nav links or forms.
 
-   Do not just return the first 2000 characters of raw markdown. That often gives you navigation, form fields, country dropdowns, or YouTube footer links.
-
-   Add a helper called cleanText(value: string): string that:
-
-   - Splits text into lines
-   - Trims each line
-   - Removes empty lines
-   - Removes markdown image lines that start with ![
-   - Removes lines that are just links, like [About](...)
-   - Removes lines with common form labels: First name, Last name, Business email, Phone, Country, State, Download, Sign in, Subscribe
-   - Removes exact duplicate lines
-   - Joins the remaining lines with spaces
-   - Collapses repeated whitespace
+   In this lesson, text is a short fallback. In Lesson 4, the LLM will replace text with a better summary. Preserve the raw markdown so the LLM has enough source material to summarize later.
 
    For each raw item:
 
@@ -119,13 +107,14 @@ BEHAVIOR:
    - Skip the item if there is no URL
    - Skip URLs from youtube.com, reddit.com, and medium.com unless the user's topic explicitly asks for those sites
    - Get the title from item.metadata?.title || item.searchResult?.title || null
-   - Build text from the best available evidence, in this order:
+   - Build text from short source descriptions only, in this order:
      1. item.searchResult?.description
      2. item.metadata?.description
-     3. cleanText(item.markdown || '')
    - Join those parts into one string
-   - Trim it to 2000 characters
-   - Skip the item if text is empty after trimming
+   - Trim it to 1000 characters
+   - Add rawMarkdown: item.markdown ? item.markdown.slice(0, 30000) : null
+   - Do not put raw markdown into text
+   - Skip the item if both text and rawMarkdown are empty after trimming
 
    Return this shape:
 
@@ -135,6 +124,7 @@ BEHAVIOR:
      url: item.metadata?.url || item.searchResult?.url,
      title: item.metadata?.title || item.searchResult?.title || null,
      text,
+     rawMarkdown: item.markdown ? item.markdown.slice(0, 30000) : null,
      author: null,
      authorUrl: null,
      publishedAt: null,
