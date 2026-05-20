@@ -24,27 +24,31 @@ AI agents can write code but they can't see what's happening on the live web. In
 
 ### Software
 
-- Git. This workshop assumes you already have Git installed and know how to work in a local project folder.
+#### Git and GitHub
+
+This workshop assumes you already have Git installed and know how to work in a local project folder.
+
+You do not need to clone this workshop during the exercises, but you should have GitHub access available for saving or sharing your work.
 
 ```bash
 git --version
 ```
 
-- GitHub account. You do not need to clone this workshop during the exercises, but you should have GitHub access available for saving or sharing your work.
+#### Node.js
 
-- Node.js 18 or higher. Node 22 recommended.
+Use Node.js 18 or higher. Node 22 recommended.
 
 ```bash
 node --version
 ```
 
-- npm 9 or higher.
+Use npm 9 or higher.
 
 ```bash
 npm --version
 ```
 
-- Apify CLI.
+#### Apify CLI
 
 Install:
 
@@ -65,7 +69,9 @@ apify --version
 apify whoami
 ```
 
-- A coding agent: Claude Code, Cursor, Codex CLI, or similar.
+#### Coding agent
+
+Use Claude Code, Cursor, Codex CLI, or similar.
 
 ### Windows note
 
