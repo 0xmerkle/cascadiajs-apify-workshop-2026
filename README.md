@@ -66,7 +66,7 @@ Verify:
 
 ```bash
 apify --version
-apify whoami
+apify info
 ```
 
 #### Coding agent
@@ -86,7 +86,7 @@ git --version
 node --version
 npm --version
 apify --version
-apify whoami
+apify info
 ```
 
 If any command fails, fix it before the workshop or raise your hand when you arrive.

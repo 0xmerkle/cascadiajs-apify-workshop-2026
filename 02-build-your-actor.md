@@ -7,12 +7,32 @@ Goal: Create a new Apify Actor that calls RAG Web Browser and returns clean, nor
 Run:
 
 ```bash
-apify create catch-me-up --template project_cheerio_crawler_ts
+apify create
+```
+
+The CLI wizard will ask a few questions.
+
+Use these answers:
+
+```text
+Actor name: catch-me-up
+Language: TypeScript
+Template: Empty project
+```
+
+Then enter the new project folder:
+
+```bash
 cd catch-me-up
+```
+
+Install the Apify API client:
+
+```bash
 npm install apify-client
 ```
 
-`apify create` gives you a starter TypeScript Actor project. We picked the Cheerio template as a starting point, but we're going to replace the default code with our own.
+`apify create` gives you a starter Actor project. We're using the empty TypeScript template because we do not need a crawler. We're building a wrapper around another Actor.
 
 `apify-client` lets one Actor call another Actor.
 

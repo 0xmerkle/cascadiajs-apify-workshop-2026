@@ -19,12 +19,12 @@ apify --version
 ```
 
 ```bash
-apify whoami
+apify info
 ```
 
-You should see version numbers for Node, npm, and Apify CLI. `apify whoami` should show your Apify username.
+You should see version numbers for Node, npm, and Apify CLI. `apify info` should show your Apify account and CLI configuration.
 
-If `apify whoami` says you are not logged in, run:
+If `apify info` says you are not logged in, run:
 
 ```bash
 apify login
@@ -36,12 +36,8 @@ If anything else fails, raise your hand.
 
 RAG Web Browser is an Apify marketplace Actor. It searches Google, opens the top results, extracts page content, and returns clean Markdown.
 
-1. Open [console.apify.com](https://console.apify.com).
-2. Go to Store.
-3. Search for `RAG Web Browser`.
-4. Open `apify/rag-web-browser`.
-5. Click **Start**.
-6. Set the input:
+1. Open [RAG Web Browser in Apify Console](https://console.apify.com/actors/3ox4R101TgZz67sLr/input).
+2. Set the input:
 
 ```json
 {
@@ -51,10 +47,10 @@ RAG Web Browser is an Apify marketplace Actor. It searches Google, opens the top
 }
 ```
 
-7. Leave everything else as default.
-8. Click **Start**.
-9. Wait about 30 seconds.
-10. Open the **Dataset** tab.
+3. Leave everything else as default.
+4. Click **Start**.
+5. Wait about 30 seconds.
+6. Open the **Dataset** tab.
 
 Each result has three important parts:
 
