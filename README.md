@@ -24,6 +24,14 @@ AI agents can write code but they can't see what's happening on the live web. In
 
 ### Software
 
+- Git. This workshop assumes you already have Git installed and know how to work in a local project folder.
+
+```bash
+git --version
+```
+
+- GitHub account. You do not need to clone this workshop during the exercises, but you should have GitHub access available for saving or sharing your work.
+
 - Node.js 18 or higher. Node 22 recommended.
 
 ```bash
@@ -38,9 +46,22 @@ npm --version
 
 - Apify CLI.
 
+Install:
+
 ```bash
 npm install -g apify-cli
+```
+
+Log in:
+
+```bash
 apify login
+```
+
+Verify:
+
+```bash
+apify --version
 apify whoami
 ```
 
@@ -55,6 +76,7 @@ Claude Code requires WSL2. Install everything inside WSL.
 Run all of these before the workshop:
 
 ```bash
+git --version
 node --version
 npm --version
 apify --version
