@@ -101,4 +101,6 @@ If any command fails, fix it before the workshop or raise your hand when you arr
 | [04](./04-add-filtering.md) | Add relevance filtering | ~15 min |
 | [05](./05-deploy.md) | Deploy to Apify cloud | ~10 min |
 
+The `reference/` folder contains copy-paste helpers for parts that should be exact, including the RAG Web Browser input settings and LLM calls.
+
 Stuck? Raise your hand.

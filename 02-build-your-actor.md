@@ -40,6 +40,20 @@ npm install apify-client
 
 `apify-client` lets one Actor call another Actor.
 
+Now copy the RAG Web Browser input helper into your Actor project.
+
+1. Open [`reference/rag-web-browser-input.ts`](./reference/rag-web-browser-input.ts) from these workshop materials.
+2. Create a new file in your Actor project at `src/rag-web-browser-input.ts`.
+3. Copy the full contents of `reference/rag-web-browser-input.ts` into that new file.
+
+If you are working from a local copy of these workshop materials, this command may also work:
+
+```bash
+cp ../reference/rag-web-browser-input.ts src/rag-web-browser-input.ts
+```
+
+This helper gives your coding agent the exact RAG Web Browser settings to use. The point of the workshop is not to guess the right scraping options. The point is to wrap an existing Actor and add your own logic around it.
+
 ## Step 2: Build the core actor
 
 Copy the prompt below and give it to your coding agent. Paste it into Claude Code, Cursor, Codex, or whatever you're using.
@@ -63,28 +77,64 @@ BEHAVIOR:
    const token = process.env.APIFY_API_TOKEN || env.token || process.env.APIFY_TOKEN;
    const client = new ApifyClient({ token });
 
-4. Call the "apify/rag-web-browser" marketplace Actor using the client:
+4. Import createRagWebBrowserInput from './rag-web-browser-input.js'.
 
-   const run = await client.actor('apify/rag-web-browser').call({
-     query: topic,
-     maxResults: maxResults,
-     outputFormats: ['markdown'],
-     requestTimeoutSecs: 40,
-     scrapingTool: 'raw-http',
-   });
+5. Call the "apify/rag-web-browser" marketplace Actor using the helper:
 
-5. Fetch the results from the run's dataset:
+   const ragMaxResults = Math.max(maxResults * 2, 10);
+   const run = await client.actor('apify/rag-web-browser').call(
+     createRagWebBrowserInput(topic, ragMaxResults),
+   );
+
+   Do not invent a different RAG Web Browser input object. Use the helper.
+
+   The actor input maxResults is the final number of clean results to return.
+   ragMaxResults is the number of raw pages to fetch. Fetch extra pages because some pages fail, duplicate, or get filtered out.
+
+6. Fetch the results from the run's dataset:
 
    const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-6. Normalize each result into this shape:
+7. Normalize each result.
+
+   RAG Web Browser results are useful, but raw. Some pages load cleanly and have markdown. Some pages fail to load but still have a useful Google searchResult. Some pages have markdown full of nav links or forms.
+
+   Do not just return the first 2000 characters of raw markdown. That often gives you navigation, form fields, country dropdowns, or YouTube footer links.
+
+   Add a helper called cleanText(value: string): string that:
+
+   - Splits text into lines
+   - Trims each line
+   - Removes empty lines
+   - Removes markdown image lines that start with ![
+   - Removes lines that are just links, like [About](...)
+   - Removes lines with common form labels: First name, Last name, Business email, Phone, Country, State, Download, Sign in, Subscribe
+   - Removes exact duplicate lines
+   - Joins the remaining lines with spaces
+   - Collapses repeated whitespace
+
+   For each raw item:
+
+   - Get the URL from item.metadata?.url || item.searchResult?.url
+   - Skip the item if there is no URL
+   - Skip URLs from youtube.com, reddit.com, and medium.com unless the user's topic explicitly asks for those sites
+   - Get the title from item.metadata?.title || item.searchResult?.title || null
+   - Build text from the best available evidence, in this order:
+     1. item.searchResult?.description
+     2. item.metadata?.description
+     3. cleanText(item.markdown || '')
+   - Join those parts into one string
+   - Trim it to 2000 characters
+   - Skip the item if text is empty after trimming
+
+   Return this shape:
 
    {
      id: item.metadata?.url || item.searchResult?.url,
      platform: 'web',
      url: item.metadata?.url || item.searchResult?.url,
      title: item.metadata?.title || item.searchResult?.title || null,
-     text: item.markdown ? item.markdown.slice(0, 2000) : (item.searchResult?.description || ''),
+     text,
      author: null,
      authorUrl: null,
      publishedAt: null,
@@ -92,9 +142,10 @@ BEHAVIOR:
      searchRank: index + 1,
    }
 
-7. Deduplicate by URL. If two items have the same URL, keep the first one.
-8. Push all normalized items to the dataset with Actor.pushData()
-9. Call Actor.exit()
+8. Deduplicate by URL. If two items have the same URL, keep the first one.
+9. Keep only the first maxResults normalized items after deduplication.
+10. Push all normalized items to the dataset with Actor.pushData()
+11. Call Actor.exit()
 
 ERROR HANDLING:
 - Import log from 'apify' and use log.info(), log.warning(), and log.error()
@@ -107,6 +158,7 @@ ERROR HANDLING:
 IMPORTS:
 - Actor and log from 'apify'
 - ApifyClient from 'apify-client'
+- createRagWebBrowserInput from './rag-web-browser-input.js'
 ```
 
 ## Step 3: Update the input schema

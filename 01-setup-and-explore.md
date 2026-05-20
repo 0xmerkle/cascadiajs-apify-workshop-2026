@@ -43,11 +43,25 @@ RAG Web Browser is an Apify marketplace Actor. It searches Google, opens the top
 {
   "query": "latest AI agent developments",
   "maxResults": 3,
-  "outputFormats": ["markdown"]
+  "outputFormats": ["markdown"],
+  "removeCookieWarnings": true,
+  "requestTimeoutSecs": 40,
+  "serpProxyGroup": "GOOGLE_SERP",
+  "serpMaxRetries": 2,
+  "proxyConfiguration": {
+    "useApifyProxy": true
+  },
+  "scrapingTool": "raw-http",
+  "removeElementsCssSelector": "nav, footer, script, style, noscript, svg, img[src^='data:'],\n[role=\"alert\"],\n[role=\"banner\"],\n[role=\"dialog\"],\n[role=\"alertdialog\"],\n[role=\"region\"][aria-label*=\"skip\" i],\n[aria-modal=\"true\"]",
+  "htmlTransformer": "none",
+  "desiredConcurrency": 5,
+  "maxRequestRetries": 1,
+  "dynamicContentWaitSecs": 10,
+  "debugMode": false
 }
 ```
 
-3. Leave everything else as default.
+3. These settings are also included in `reference/rag-web-browser-input.ts`.
 4. Click **Start**.
 5. Wait about 30 seconds.
 6. Open the **Dataset** tab.
@@ -57,6 +71,26 @@ Each result has three important parts:
 - `searchResult`: what Google showed, including title, description, and URL
 - `metadata`: what the page itself says, including actual page title and meta description
 - `markdown`: the page content converted into Markdown
+
+You may also see fields like `crawl`, `query`, or `text`.
+
+`crawl` tells you whether the page loaded. Sometimes a page is blocked or times out. That is normal on the web.
+
+Even failed page loads can still be useful because `searchResult` usually has the Google title, description, and URL. Your actor can use that as a fallback.
+
+The raw `markdown` can be messy. It may include navigation, forms, cookie banners, or page footer links. That is why we do not return the raw RAG Web Browser output directly.
+
+Our actor will turn this:
+
+```text
+searchResult + metadata + markdown + crawl details
+```
+
+into this:
+
+```text
+id, url, title, text, searchRank
+```
 
 This is the tool we'll wrap. Your actor will call RAG Web Browser, get these results back, and add your own logic on top.
 
