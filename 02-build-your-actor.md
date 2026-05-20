@@ -7,23 +7,27 @@ Goal: Create a new Apify Actor that calls RAG Web Browser and returns clean, nor
 Run:
 
 ```bash
-apify create
+apify create catch-me-up-actor
 ```
 
-The CLI wizard will ask a few questions.
+The CLI wizard will open.
 
-Use these answers:
+First, choose the programming language:
 
 ```text
-Actor name: catch-me-up
-Language: TypeScript
-Template: Empty project
+TypeScript
+```
+
+Then choose the template:
+
+```text
+Empty TypeScript project
 ```
 
 Then enter the new project folder:
 
 ```bash
-cd catch-me-up
+cd catch-me-up-actor
 ```
 
 Install the Apify API client:
