@@ -57,7 +57,12 @@ INPUT (read with Actor.getInput()):
 BEHAVIOR:
 1. Call Actor.init() at the start
 2. Read and validate input. If no topic, throw an error.
-3. Create an ApifyClient instance using process.env.APIFY_TOKEN
+3. Create an ApifyClient instance using this token fallback:
+
+   const env = Actor.getEnv();
+   const token = process.env.APIFY_API_TOKEN || env.token || process.env.APIFY_TOKEN;
+   const client = new ApifyClient({ token });
+
 4. Call the "apify/rag-web-browser" marketplace Actor using the client:
 
    const run = await client.actor('apify/rag-web-browser').call({
@@ -92,11 +97,15 @@ BEHAVIOR:
 9. Call Actor.exit()
 
 ERROR HANDLING:
-- If the RAG Web Browser call fails, log the error with Actor.log.error() and exit gracefully
+- Import log from 'apify' and use log.info(), log.warning(), and log.error()
+- Do not use Actor.log. It is undefined in this SDK version.
+- Do not use process.exit(). Return cleanly and let Actor.exit() run.
+- If the RAG Web Browser call fails, log the error with log.error() and exit gracefully
 - Use try/catch around the main logic
+- Use finally { await Actor.exit(); } so Actor.exit() always runs exactly once
 
 IMPORTS:
-- Actor from 'apify'
+- Actor and log from 'apify'
 - ApifyClient from 'apify-client'
 ```
 
@@ -118,6 +127,12 @@ Create a local input file:
 ```bash
 mkdir -p storage/key_value_stores/default
 echo '{"topic": "AI agents", "maxResults": 3}' > storage/key_value_stores/default/INPUT.json
+```
+
+Optional but useful: run a TypeScript build before running the Actor.
+
+```bash
+npm run build
 ```
 
 Run your actor:
@@ -149,10 +164,16 @@ text
 searchRank
 ```
 
-If you see `APIFY_TOKEN` errors, run:
+If you see API token errors, run:
 
 ```bash
 apify login
+```
+
+Then run:
+
+```bash
+apify info
 ```
 
 If you see `Actor not found`, check the Actor name:
