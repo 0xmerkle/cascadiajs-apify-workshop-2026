@@ -1,0 +1,76 @@
+# Build Better Agent Tools with Apify
+
+CascadiaJS 2026 Workshop
+
+AI agents can write code but they can't see what's happening on the live web. In this workshop you'll build and deploy a cloud tool that wraps Apify's RAG Web Browser with your own custom logic, giving any coding agent the ability to research topics using real-time web data.
+
+## What you'll learn
+
+- How Apify Actors work
+- How to call an existing marketplace Actor from inside your own Actor
+- How to add custom logic, like LLM-powered search planning and relevance filtering, on top
+- How to deploy to the cloud
+
+## What you'll need
+
+### Accounts
+
+- Apify account at [console.apify.com](https://console.apify.com). Free tier. We're providing credits for all attendees.
+- For Lesson 3 and Lesson 4: an LLM API key. Pick one:
+  - OpenAI: [platform.openai.com](https://platform.openai.com). Paid, $5 minimum.
+  - Anthropic: [console.anthropic.com](https://console.anthropic.com). Paid, or comes with Claude Code subscription.
+  - Google Gemini: [aistudio.google.com](https://aistudio.google.com). Completely free, no credit card.
+  - Or skip Lessons 3 and 4. The actor works without LLM features.
+
+### Software
+
+- Node.js 18 or higher. Node 22 recommended.
+
+```bash
+node --version
+```
+
+- npm 9 or higher.
+
+```bash
+npm --version
+```
+
+- Apify CLI.
+
+```bash
+npm install -g apify-cli
+apify login
+apify whoami
+```
+
+- A coding agent: Claude Code, Cursor, Codex CLI, or similar.
+
+### Windows note
+
+Claude Code requires WSL2. Install everything inside WSL.
+
+### Preflight check
+
+Run all of these before the workshop:
+
+```bash
+node --version
+npm --version
+apify --version
+apify whoami
+```
+
+If any command fails, fix it before the workshop or raise your hand when you arrive.
+
+## Lessons
+
+| Lesson | What you'll do | Time |
+|--------|---------------|------|
+| [01](./01-setup-and-explore.md) | Set up and explore RAG Web Browser | ~10 min |
+| [02](./02-build-your-actor.md) | Build your Actor | ~30 min |
+| [03](./03-add-smart-search.md) | Add smart search with an LLM | ~15 min |
+| [04](./04-add-filtering.md) | Add relevance filtering | ~15 min |
+| [05](./05-deploy.md) | Deploy to Apify cloud | ~10 min |
+
+Stuck? Raise your hand.
