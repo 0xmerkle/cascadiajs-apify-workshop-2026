@@ -2,7 +2,7 @@
 
 Goal: Use an LLM to turn a vague topic into better Google search queries.
 
-This lesson requires an LLM API key. If you don't have one, skip to [Lesson 5](./05-deploy.md). Your actor works fine without this. It just searches your literal topic text.
+This lesson requires an LLM API key. If you don't have one, skip to [Lesson 4](./04-deploy.md). Your actor works fine without this. It just searches your literal topic text.
 
 ## The problem
 
@@ -124,4 +124,4 @@ If you see `401` or `invalid_api_key`, check your API key.
 
 If you see the same literal query as before, check that your environment variable name matches your provider.
 
-Your actor now understands what you actually mean and searches smarter. Next, we'll filter out the noise.
+Your actor now understands what you actually mean and searches smarter. Next, we'll deploy it.

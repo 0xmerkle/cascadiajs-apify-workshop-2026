@@ -56,10 +56,12 @@ This helper gives your coding agent the exact RAG Web Browser settings to use. T
 
 ## Step 2: Build the core actor
 
-Copy the prompt below and give it to your coding agent. Paste it into Claude Code, Cursor, Codex, or whatever you're using.
+We'll build the Actor in a few smaller prompts instead of one giant prompt.
+
+First, give this to your coding agent:
 
 ```text
-Replace the contents of src/main.ts with a new Apify Actor. Here's what it should do:
+Replace the contents of src/main.ts with a new Apify Actor shell.
 
 INPUT (read with Actor.getInput()):
 {
@@ -95,47 +97,7 @@ BEHAVIOR:
 
    const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-7. Normalize each result.
-
-   RAG Web Browser results are useful, but raw. Some pages load cleanly and have markdown. Some pages fail to load but still have a useful Google searchResult. Some pages have markdown full of nav links or forms.
-
-   In this lesson, text is a short fallback. In Lesson 4, the LLM will replace text with a better summary. Preserve the raw markdown so the LLM has enough source material to summarize later.
-
-   For each raw item:
-
-   - Get the URL from item.metadata?.url || item.searchResult?.url
-   - Skip the item if there is no URL
-   - Skip URLs from youtube.com, reddit.com, and medium.com unless the user's topic explicitly asks for those sites
-   - Get the title from item.metadata?.title || item.searchResult?.title || null
-   - Build text from short source descriptions only, in this order:
-     1. item.searchResult?.description
-     2. item.metadata?.description
-   - Join those parts into one string
-   - Trim it to 1000 characters
-   - Add rawMarkdown: item.markdown ? item.markdown.slice(0, 30000) : null
-   - Do not put raw markdown into text
-   - Skip the item if both text and rawMarkdown are empty after trimming
-
-   Return this shape:
-
-   {
-     id: item.metadata?.url || item.searchResult?.url,
-     platform: 'web',
-     url: item.metadata?.url || item.searchResult?.url,
-     title: item.metadata?.title || item.searchResult?.title || null,
-     text,
-     rawMarkdown: item.markdown ? item.markdown.slice(0, 30000) : null,
-     author: null,
-     authorUrl: null,
-     publishedAt: null,
-     engagementScore: 0,
-     searchRank: index + 1,
-   }
-
-8. Deduplicate by URL. If two items have the same URL, keep the first one.
-9. Keep only the first maxResults normalized items after deduplication.
-10. Push all normalized items to the dataset with Actor.pushData()
-11. Call Actor.exit()
+7. For now, log how many raw items came back.
 
 ERROR HANDLING:
 - Import log from 'apify' and use log.info(), log.warning(), and log.error()
@@ -149,6 +111,66 @@ IMPORTS:
 - Actor and log from 'apify'
 - ApifyClient from 'apify-client'
 - createRagWebBrowserInput from './rag-web-browser-input.js'
+```
+
+Now give your agent this:
+
+```text
+Add normalization and deduplication to src/main.ts.
+
+RAG Web Browser results are useful, but raw. Some pages load cleanly and have markdown. Some pages fail to load but still have a useful Google searchResult. Some pages have markdown full of nav links or forms.
+
+For each raw item:
+
+- Get the URL from item.metadata?.url || item.searchResult?.url
+- Skip the item if there is no URL
+- Skip URLs from youtube.com, reddit.com, and medium.com unless the user's topic explicitly asks for those sites
+- Get the title from item.metadata?.title || item.searchResult?.title || null
+- Build text from these parts:
+  1. item.searchResult?.description
+  2. item.metadata?.description
+  3. item.markdown
+- Join those parts into one string
+- Collapse repeated whitespace
+- Trim text to 4000 characters
+- Add rawMarkdown: item.markdown ? item.markdown.slice(0, 30000) : null
+- Skip the item if both text and rawMarkdown are empty after trimming
+
+Return this shape:
+
+{
+  id: item.metadata?.url || item.searchResult?.url,
+  platform: 'web',
+  url: item.metadata?.url || item.searchResult?.url,
+  title: item.metadata?.title || item.searchResult?.title || null,
+  text,
+  rawMarkdown: item.markdown ? item.markdown.slice(0, 30000) : null,
+  author: null,
+  authorUrl: null,
+  publishedAt: null,
+  engagementScore: 0,
+  searchRank: index + 1,
+}
+
+Then:
+
+1. Deduplicate by URL. If two items have the same URL, keep the first one.
+2. Keep only the first maxResults normalized items after deduplication.
+3. Push all normalized items to the dataset with Actor.pushData().
+4. Log how many items were pushed.
+```
+
+Finally, give your agent this:
+
+```text
+Review src/main.ts for these details:
+
+- Actor.exit() should be called exactly once in a finally block.
+- There should be no process.exit().
+- The actor should still return cleanly if the RAG Web Browser call fails.
+- maxResults should default to 5 and be clamped between 1 and 20.
+- topic should be trimmed before use.
+- TypeScript should build without errors.
 ```
 
 ## Step 3: Update the input schema
@@ -203,6 +225,7 @@ platform
 url
 title
 text
+rawMarkdown
 searchRank
 ```
 

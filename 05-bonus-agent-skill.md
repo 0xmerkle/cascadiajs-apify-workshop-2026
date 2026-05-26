@@ -1,4 +1,4 @@
-# Lesson 6: Bonus Agent Skill
+# Lesson 5: Bonus Agent Skill
 
 Goal: Install a skill so your coding agent knows how to call your private Actor.
 
@@ -119,6 +119,6 @@ Or:
 Use the catch-me-up skill to find recent news about React server components.
 ```
 
-The skill tells your agent when to use the Actor, how to run the bundled script, and how to interpret the returned summaries and source markdown.
+The skill tells your agent when to use the Actor, how to run the bundled script, and how to interpret the returned results and source markdown.
 
 You now have a private cloud research tool your coding agent can call on demand.

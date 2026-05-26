@@ -1,10 +1,10 @@
-# Lesson 5: Deploy to Apify Cloud
+# Lesson 4: Deploy to Apify Cloud
 
 Goal: Push the Actor to the cloud so it can be called from anywhere.
 
 ## Step 1: Set up secrets
 
-If you added LLM features in Lesson 3 or Lesson 4, store your key as an Apify secret.
+If you added LLM features in Lesson 3, store your key as an Apify secret.
 
 For OpenAI:
 
