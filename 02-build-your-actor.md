@@ -30,6 +30,8 @@ Then enter the new project folder:
 cd catch-me-up-actor
 ```
 
+Open your coding agent from inside this Actor project folder. The generated project includes an `AGENTS.md` file with Apify-specific guidance. Your agent should read that file before changing code.
+
 Install the Apify API client:
 
 ```bash
@@ -63,6 +65,8 @@ Build this in stages. After each prompt, skim the code your agent wrote before m
 This gives the Actor its input handling, API client setup, and lifecycle.
 
 ```text
+Read the AGENTS.md file in this project first. Follow its Apify Actor guidance while implementing this.
+
 Replace the contents of src/main.ts with a new Apify Actor shell.
 
 INPUT (read with Actor.getInput()):
