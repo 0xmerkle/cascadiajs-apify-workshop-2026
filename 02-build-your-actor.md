@@ -73,15 +73,17 @@ INPUT (read with Actor.getInput()):
 }
 
 BEHAVIOR:
-1. Call Actor.init() at the start
-2. Read and validate input. If no topic, throw an error.
-3. Create an ApifyClient instance using this token fallback:
+1. Wrap the actor logic in Actor.main(async () => { ... }).
+   Actor.main handles Actor.init() and Actor.exit() for you.
+2. Do not call Actor.init() or Actor.exit() manually if you use Actor.main.
+3. Read and validate input inside the Actor.main callback. If no topic, throw an error.
+4. Create an ApifyClient instance using this token fallback:
 
    const env = Actor.getEnv();
    const token = process.env.APIFY_API_TOKEN || env.token || process.env.APIFY_TOKEN;
    const client = new ApifyClient({ token });
 
-4. For now, log the validated input and confirm the client was created.
+5. For now, log the validated input and confirm the client was created.
 
 INPUT RULES:
 - maxResults should default to 5 and be clamped between 1 and 20.
@@ -90,9 +92,9 @@ INPUT RULES:
 ERROR HANDLING:
 - Import log from 'apify' and use log.info(), log.warning(), and log.error()
 - Do not use Actor.log. It is undefined in this SDK version.
-- Do not use process.exit(). Return cleanly and let Actor.exit() run.
+- Do not use process.exit().
+- Do not put return statements at the top level of the file.
 - Use try/catch around the main logic
-- Use finally { await Actor.exit(); } so Actor.exit() always runs exactly once
 
 IMPORTS:
 - Actor and log from 'apify'
@@ -126,7 +128,9 @@ Update src/main.ts so it calls the "apify/rag-web-browser" marketplace Actor.
 
 4. Log how many raw items came back.
 
-5. If the RAG Web Browser call fails, log the error with log.error() and exit gracefully.
+5. If the RAG Web Browser call fails, log the error with log.error() and return from the Actor.main callback.
+   Do not call process.exit().
+   Do not put a bare return at the top level of the file.
 
 IMPORTS:
 - createRagWebBrowserInput from './rag-web-browser-input.js'
@@ -196,8 +200,10 @@ Ask your agent to check the final code before you run it.
 ```text
 Review src/main.ts for these details:
 
-- Actor.exit() should be called exactly once in a finally block.
+- The actor logic should be wrapped in Actor.main(async () => { ... }).
+- Do not call Actor.init() or Actor.exit() manually when using Actor.main.
 - There should be no process.exit().
+- There should be no return statement at the top level of the file.
 - The actor should still return cleanly if the RAG Web Browser call fails.
 - TypeScript should build without errors.
 ```
