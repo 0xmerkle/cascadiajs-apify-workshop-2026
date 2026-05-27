@@ -56,9 +56,11 @@ This helper gives your coding agent the exact RAG Web Browser settings to use. T
 
 ## Step 2: Build the core actor
 
-We'll build the Actor in a few smaller prompts instead of one giant prompt.
+Build this in stages. After each prompt, skim the code your agent wrote before moving on.
 
-First, give this to your coding agent:
+### 2.1 Create the Actor shell
+
+This gives the Actor its input handling, API client setup, and lifecycle.
 
 ```text
 Replace the contents of src/main.ts with a new Apify Actor shell.
@@ -79,9 +81,34 @@ BEHAVIOR:
    const token = process.env.APIFY_API_TOKEN || env.token || process.env.APIFY_TOKEN;
    const client = new ApifyClient({ token });
 
-4. Import createRagWebBrowserInput from './rag-web-browser-input.js'.
+4. For now, log the validated input and confirm the client was created.
 
-5. Call the "apify/rag-web-browser" marketplace Actor using the helper:
+INPUT RULES:
+- maxResults should default to 5 and be clamped between 1 and 20.
+- topic should be trimmed before use.
+
+ERROR HANDLING:
+- Import log from 'apify' and use log.info(), log.warning(), and log.error()
+- Do not use Actor.log. It is undefined in this SDK version.
+- Do not use process.exit(). Return cleanly and let Actor.exit() run.
+- Use try/catch around the main logic
+- Use finally { await Actor.exit(); } so Actor.exit() always runs exactly once
+
+IMPORTS:
+- Actor and log from 'apify'
+- ApifyClient from 'apify-client'
+```
+
+### 2.2 Call RAG Web Browser
+
+Now your Actor calls another Actor and fetches that run's dataset.
+
+```text
+Update src/main.ts so it calls the "apify/rag-web-browser" marketplace Actor.
+
+1. Import createRagWebBrowserInput from './rag-web-browser-input.js'.
+
+2. Call RAG Web Browser with the helper:
 
    const ragMaxResults = Math.max(maxResults * 2, 10);
    const run = await client.actor('apify/rag-web-browser').call(
@@ -93,30 +120,24 @@ BEHAVIOR:
    The actor input maxResults is the final number of clean results to return.
    ragMaxResults is the number of raw pages to fetch. Fetch extra pages because some pages fail, duplicate, or get filtered out.
 
-6. Fetch the results from the run's dataset:
+3. Fetch the results from the run's dataset:
 
    const { items } = await client.dataset(run.defaultDatasetId).listItems();
 
-7. For now, log how many raw items came back.
+4. Log how many raw items came back.
 
-ERROR HANDLING:
-- Import log from 'apify' and use log.info(), log.warning(), and log.error()
-- Do not use Actor.log. It is undefined in this SDK version.
-- Do not use process.exit(). Return cleanly and let Actor.exit() run.
-- If the RAG Web Browser call fails, log the error with log.error() and exit gracefully
-- Use try/catch around the main logic
-- Use finally { await Actor.exit(); } so Actor.exit() always runs exactly once
+5. If the RAG Web Browser call fails, log the error with log.error() and exit gracefully.
 
 IMPORTS:
-- Actor and log from 'apify'
-- ApifyClient from 'apify-client'
 - createRagWebBrowserInput from './rag-web-browser-input.js'
 ```
 
-Now give your agent this:
+### 2.3 Normalize results
+
+RAG Web Browser output is raw. Normalize it into the shape your API caller and agent skill will expect.
 
 ```text
-Add normalization and deduplication to src/main.ts.
+Add a normalizeItem helper to src/main.ts.
 
 RAG Web Browser results are useful, but raw. Some pages load cleanly and have markdown. Some pages fail to load but still have a useful Google searchResult. Some pages have markdown full of nav links or forms.
 
@@ -151,6 +172,14 @@ Return this shape:
   engagementScore: 0,
   searchRank: index + 1,
 }
+```
+
+### 2.4 Dedupe and push results
+
+Now remove duplicate URLs, limit the result count, and write clean items to the default dataset.
+
+```text
+Update src/main.ts to use the normalizeItem helper.
 
 Then:
 
@@ -160,7 +189,9 @@ Then:
 4. Log how many items were pushed.
 ```
 
-Finally, give your agent this:
+### 2.5 Review the implementation
+
+Ask your agent to check the final code before you run it.
 
 ```text
 Review src/main.ts for these details:
@@ -168,8 +199,6 @@ Review src/main.ts for these details:
 - Actor.exit() should be called exactly once in a finally block.
 - There should be no process.exit().
 - The actor should still return cleanly if the RAG Web Browser call fails.
-- maxResults should default to 5 and be clamped between 1 and 20.
-- topic should be trimmed before use.
 - TypeScript should build without errors.
 ```
 
