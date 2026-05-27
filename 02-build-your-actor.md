@@ -147,6 +147,10 @@ RAG Web Browser output is raw. Normalize it into the shape your API caller and a
 ```text
 Add a normalizeItem helper to src/main.ts.
 
+Define normalizeItem as a local function inside src/main.ts.
+Do not create a new file for it.
+Do not import normalizeItem from another module.
+
 RAG Web Browser results are useful, but raw. Some pages load cleanly and have markdown. Some pages fail to load but still have a useful Google searchResult. Some pages have markdown full of nav links or forms.
 
 For each raw item:
@@ -187,7 +191,10 @@ Return this shape:
 Now remove duplicate URLs, limit the result count, and write clean items to the default dataset.
 
 ```text
-Update src/main.ts to use the normalizeItem helper.
+Update src/main.ts to use the normalizeItem helper that is already defined locally in src/main.ts.
+
+Do not add an import for normalizeItem.
+Do not create a separate normalizeItem file.
 
 Then:
 
@@ -229,7 +236,7 @@ Create a local input file:
 
 ```bash
 mkdir -p storage/key_value_stores/default
-echo '{"topic": "AI agents", "maxResults": 3}' > storage/key_value_stores/default/INPUT.json
+echo '{"topic": "AI agents", "maxResults": 8}' > storage/key_value_stores/default/INPUT.json
 ```
 
 Optional but useful: run a TypeScript build before running the Actor.
@@ -256,7 +263,7 @@ Open one result:
 cat storage/datasets/default/000000001.json
 ```
 
-You should see 3 items. Each item should have:
+You should see up to 8 items. Each item should have:
 
 ```text
 id
