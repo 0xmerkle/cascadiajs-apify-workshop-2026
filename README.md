@@ -93,13 +93,13 @@ If any command fails, fix it before the workshop or raise your hand when you arr
 
 ## Lessons
 
-| Lesson | What you'll do | Time |
-|--------|---------------|------|
-| [01](./01-setup-and-explore.md) | Set up and explore RAG Web Browser | ~10 min |
-| [02](./02-build-your-actor.md) | Build your Actor | ~30 min |
-| [03](./03-add-smart-search.md) | Add smart search with an LLM | ~15 min |
-| [04](./04-deploy.md) | Deploy to Apify cloud | ~10 min |
-| [05](./05-bonus-agent-skill.md) | Bonus: install an agent skill | ~10 min |
+| Lesson | What you'll do |
+|--------|---------------|
+| [01](./01-setup-and-explore.md) | Set up and explore RAG Web Browser |
+| [02](./02-build-your-actor.md) | Build your Actor |
+| [03](./03-add-smart-search.md) | Add smart search with an LLM |
+| [04](./04-deploy.md) | Deploy to Apify cloud |
+| [05](./05-bonus-agent-skill.md) | Bonus: install an agent skill |
 
 The `reference/` folder contains copy-paste helpers for parts that should be exact, including the RAG Web Browser input settings and LLM calls. The `skills/` folder contains a cross-agent skill for calling your deployed Actor.
 

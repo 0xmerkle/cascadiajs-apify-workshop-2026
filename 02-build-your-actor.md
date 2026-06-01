@@ -4,6 +4,18 @@ Goal: Create a new Apify Actor that calls RAG Web Browser and returns clean, nor
 
 ## Step 1: Scaffold the project
 
+Make sure you installed the Apify CLI before continuing:
+
+```bash
+apify --version
+```
+
+If that command fails, install it:
+
+```bash
+npm install -g apify-cli
+```
+
 Run:
 
 ```bash
@@ -222,7 +234,23 @@ Update .actor/INPUT_SCHEMA.json to define these input fields:
 - maxResults: integer, default 5, minimum 1, maximum 20, title "Max Results"
 ```
 
-## Step 4: Test it
+## Step 4: Update the Actor details
+
+Your Actor name, title, and description will appear in Apify Console after you deploy. Give your agent this:
+
+```text
+Update .actor/actor.json with these Actor details:
+
+- actorSpecification: 1
+- name: "catch-me-up"
+- title: "Catch Me Up"
+- description: "Search the live web for recent information about a topic using smarter LLM-generated queries."
+
+Keep the existing Dockerfile and input schema references.
+Do not remove other required actor.json fields from the generated project.
+```
+
+## Step 5: Test it
 
 Create a local input file:
 
