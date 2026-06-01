@@ -31,14 +31,13 @@ node scripts/catch-me-up.js "TOPIC_HERE"
 Optional flags:
 
 ```bash
-node scripts/catch-me-up.js "TOPIC_HERE" --max-results 5 --time-range week
+node scripts/catch-me-up.js "TOPIC_HERE" --max-results 5
 ```
 
 Use:
 
 - `topic`: the user's topic
 - `--max-results`: usually `5`
-- `--time-range`: `day`, `week`, or `month`
 
 ## How To Use Results
 

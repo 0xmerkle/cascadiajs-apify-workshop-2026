@@ -95,8 +95,7 @@ apify push
 ```json
 {
   "topic": "AI agents",
-  "maxResults": 5,
-  "timeRange": "week"
+  "maxResults": 5
 }
 ```
 
