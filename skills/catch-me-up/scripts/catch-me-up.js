@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 function printUsage() {
-    console.error('Usage: node catch-me-up.js "topic" [--max-results 5] [--time-range week]');
+    console.error('Usage: node catch-me-up.js "topic" [--max-results 5]');
 }
 
 function readFlag(name, fallback) {
@@ -30,15 +30,9 @@ if (!actorId) {
 }
 
 const maxResults = Number(readFlag('--max-results', '5'));
-const timeRange = readFlag('--time-range', 'week');
 
 if (!Number.isInteger(maxResults) || maxResults < 1 || maxResults > 20) {
     console.error('Invalid --max-results value. Use an integer from 1 to 20.');
-    process.exit(1);
-}
-
-if (!['day', 'week', 'month'].includes(timeRange)) {
-    console.error('Invalid --time-range value. Use day, week, or month.');
     process.exit(1);
 }
 
@@ -52,7 +46,6 @@ const response = await fetch(url, {
     body: JSON.stringify({
         topic,
         maxResults,
-        timeRange,
     }),
 });
 

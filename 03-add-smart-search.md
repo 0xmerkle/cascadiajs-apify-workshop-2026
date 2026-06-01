@@ -30,25 +30,25 @@ AI agent frameworks announcement report
 | Anthropic | Paid or included with Claude Code | [console.anthropic.com/settings/keys](https://console.anthropic.com/settings/keys) |
 | Gemini | Free, no credit card | [aistudio.google.com/apikey](https://aistudio.google.com/apikey) |
 
-## Step 2: Copy the helper function
+## Step 2: Copy the helper file
 
 Open the `reference/` folder in this workshop repo.
 
 Find the file for your provider:
 
-- `reference/llm-helpers-openai.ts`
-- `reference/llm-helpers-anthropic.ts`
-- `reference/llm-helpers-gemini.ts`
+- [`reference/llm-helpers-openai.ts`](./reference/llm-helpers-openai.ts)
+- [`reference/llm-helpers-anthropic.ts`](./reference/llm-helpers-anthropic.ts)
+- [`reference/llm-helpers-gemini.ts`](./reference/llm-helpers-gemini.ts)
 
-Copy the `interpretTopic` function from that file into your actor project.
+Create a new file in your Actor project:
 
-You can put it in a new file:
-
-```bash
-touch src/llm.ts
+```text
+src/llm.ts
 ```
 
-Or paste it directly into `src/main.ts`.
+Copy the full contents of your provider helper file into `src/llm.ts`.
+
+The helper includes `interpretTopic` and the provider-specific API call it needs.
 
 ## Step 3: Wire it in
 

@@ -48,12 +48,6 @@ Now copy the RAG Web Browser input helper into your Actor project.
 2. Create a new file in your Actor project at `src/rag-web-browser-input.ts`.
 3. Copy the full contents of `reference/rag-web-browser-input.ts` into that new file.
 
-If you are working from a local copy of these workshop materials, this command may also work:
-
-```bash
-cp ../reference/rag-web-browser-input.ts src/rag-web-browser-input.ts
-```
-
 This helper gives your coding agent the exact RAG Web Browser settings to use. The point of the workshop is not to guess the right scraping options. The point is to wrap an existing Actor and add your own logic around it.
 
 ## Step 2: Build the core actor
@@ -72,7 +66,6 @@ Replace the contents of src/main.ts with a new Apify Actor shell.
 INPUT (read with Actor.getInput()):
 {
   topic: string       // required, the thing to research
-  timeRange: string   // optional, "day" | "week" | "month", default "week"
   maxResults: number  // optional, 1-20, default 5
 }
 
@@ -226,7 +219,6 @@ Also give your agent this:
 ```text
 Update .actor/INPUT_SCHEMA.json to define these input fields:
 - topic: string, required, title "Topic", editor textfield, description "The topic to research"
-- timeRange: string, enum ["day", "week", "month"], default "week", title "Time Range"
 - maxResults: integer, default 5, minimum 1, maximum 20, title "Max Results"
 ```
 
@@ -257,13 +249,15 @@ Check the local dataset:
 ls storage/datasets/default
 ```
 
+You should see up to 8 JSON files. Each file contains one dataset item.
+
 Open one result:
 
 ```bash
 cat storage/datasets/default/000000001.json
 ```
 
-You should see up to 8 items. Each item should have:
+That JSON file should contain one item with:
 
 ```text
 id

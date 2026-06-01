@@ -43,25 +43,11 @@ RAG Web Browser is an Apify marketplace Actor. It searches Google, opens the top
 {
   "query": "latest AI agent developments",
   "maxResults": 3,
-  "outputFormats": ["markdown"],
-  "removeCookieWarnings": true,
-  "requestTimeoutSecs": 40,
-  "serpProxyGroup": "GOOGLE_SERP",
-  "serpMaxRetries": 2,
-  "proxyConfiguration": {
-    "useApifyProxy": true
-  },
-  "scrapingTool": "raw-http",
-  "removeElementsCssSelector": "nav, footer, script, style, noscript, svg, img[src^='data:'],\n[role=\"alert\"],\n[role=\"banner\"],\n[role=\"dialog\"],\n[role=\"alertdialog\"],\n[role=\"region\"][aria-label*=\"skip\" i],\n[aria-modal=\"true\"]",
-  "htmlTransformer": "none",
-  "desiredConcurrency": 5,
-  "maxRequestRetries": 1,
-  "dynamicContentWaitSecs": 10,
-  "debugMode": false
+  "outputFormats": ["markdown"]
 }
 ```
 
-3. These settings are also included in `reference/rag-web-browser-input.ts`.
+3. Leave the other settings as defaults. Later, your Actor will use the provided [`reference/rag-web-browser-input.ts`](./reference/rag-web-browser-input.ts) helper with sensible settings already configured.
 4. Click **Start**.
 5. Wait about 30 seconds.
 6. Open the **Dataset** tab.
@@ -93,7 +79,7 @@ searchResult + metadata + markdown + crawl details
 into this:
 
 ```text
-id, url, title, text, searchRank
+id, url, title, text, rawMarkdown, searchRank
 ```
 
 RAG Web Browser is the tool we'll wrap. Your actor will call it, get these results back, and add your own logic on top.
