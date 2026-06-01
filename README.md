@@ -71,7 +71,7 @@ apify info
 
 #### Coding agent
 
-Use Claude Code, Cursor, Codex CLI, or similar.
+You need access to a coding agent such as Claude Code, Cursor, Codex CLI, or similar. The exercises include prompts that you will give to your agent while building the Actor.
 
 ### Windows note
 
