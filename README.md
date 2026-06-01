@@ -8,7 +8,7 @@ AI agents can write code but they can't see what's happening on the live web. In
 
 - How Apify Actors work
 - How to call an existing marketplace Actor from inside your own Actor
-- How to add custom logic, like LLM-powered search planning and relevance filtering, on top
+- How to add custom logic, like LLM-powered search planning, on top
 - How to deploy to the cloud
 
 ## What you'll need
@@ -16,11 +16,11 @@ AI agents can write code but they can't see what's happening on the live web. In
 ### Accounts
 
 - Apify account at [console.apify.com](https://console.apify.com). Free tier. We're providing credits for all attendees.
-- For Lesson 3 and Lesson 4: an LLM API key. Pick one:
+- For Lesson 3: an LLM API key. Pick one:
   - OpenAI: [platform.openai.com](https://platform.openai.com). Paid, $5 minimum.
   - Anthropic: [console.anthropic.com](https://console.anthropic.com). Paid, or comes with Claude Code subscription.
   - Google Gemini: [aistudio.google.com](https://aistudio.google.com). Completely free, no credit card.
-  - Or skip Lessons 3 and 4. The actor works without LLM features.
+  - Or skip Lesson 3. The actor works without LLM features.
 
 ### Software
 
@@ -98,9 +98,8 @@ If any command fails, fix it before the workshop or raise your hand when you arr
 | [01](./01-setup-and-explore.md) | Set up and explore RAG Web Browser | ~10 min |
 | [02](./02-build-your-actor.md) | Build your Actor | ~30 min |
 | [03](./03-add-smart-search.md) | Add smart search with an LLM | ~15 min |
-| [04](./04-add-filtering.md) | Add filtering and summaries | ~15 min |
-| [05](./05-deploy.md) | Deploy to Apify cloud | ~10 min |
-| [06](./06-bonus-agent-skill.md) | Bonus: install an agent skill | ~10 min |
+| [04](./04-deploy.md) | Deploy to Apify cloud | ~10 min |
+| [05](./05-bonus-agent-skill.md) | Bonus: install an agent skill | ~10 min |
 
 The `reference/` folder contains copy-paste helpers for parts that should be exact, including the RAG Web Browser input settings and LLM calls. The `skills/` folder contains a cross-agent skill for calling your deployed Actor.
 

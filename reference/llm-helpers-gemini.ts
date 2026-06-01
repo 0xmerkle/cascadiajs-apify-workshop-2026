@@ -1,13 +1,5 @@
 // Free, no credit card. Get a key at aistudio.google.com. Rate limits: 30 RPM, 1000 RPD.
 
-type BasicItem = {
-  id: string;
-  url?: string;
-  title: string | null;
-  text: string;
-  rawMarkdown?: string | null;
-};
-
 const INTENT_SYSTEM_PROMPT = `You turn vague research topics into precise Google search queries for a web research Actor.
 
 Interpret the user's intent, identify irrelevant meanings to avoid, and return 2 or 3 Google search queries biased toward recent content.
@@ -23,39 +15,6 @@ Rules:
 - Use Google operators when useful, such as after:YYYY-MM-DD, OR, and -site:reddit.com.
 - Prefer recent news, launch, release, update, analysis, report, benchmark, demo, or announcement terms.
 - Avoid unrelated meanings of ambiguous topics.`;
-
-const FILTER_SYSTEM_PROMPT = `You are a strict relevance judge for web research results.
-
-Classify each item against the user's topic.
-
-Labels:
-- relevant: directly discusses the intended topic
-- borderline: adjacent but still useful
-- irrelevant: wrong meaning, spam, or accidental keyword match
-
-Return only JSON with this shape:
-{
-  "items": [
-    { "id": "string", "label": "relevant | borderline | irrelevant", "reason": "string" }
-  ]
-}`;
-
-const SUMMARY_SYSTEM_PROMPT = `You summarize web research results for a coding agent.
-
-Write concise, factual summaries based only on the provided source text.
-
-Rules:
-- Include specific facts, dates, numbers, names, product launches, research findings, or claims when present.
-- If the source text is mostly navigation, forms, or boilerplate, say that useful content was limited.
-- Do not invent details.
-- Keep each summary to 2 or 3 sentences.
-
-Return only JSON with this shape:
-{
-  "items": [
-    { "id": "string", "summary": "string" }
-  ]
-}`;
 
 function stripJsonFences(text: string): string {
   return text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '');
@@ -113,71 +72,5 @@ Return 2 or 3 search queries.`,
     };
   } catch {
     return { interpretedIntent: topic, queries: [topic] };
-  }
-}
-
-export async function filterResults<T extends BasicItem>(items: T[], topic: string, apiKey: string): Promise<T[]> {
-  try {
-    const compactItems = items.map((item) => ({
-      id: item.id,
-      url: item.url,
-      title: item.title,
-      text: item.text.replace(/\s+/g, ' ').trim().slice(0, 1000),
-      rawMarkdown: (item.rawMarkdown || '').replace(/\s+/g, ' ').trim().slice(0, 4000),
-    }));
-
-    const data = await callGeminiJson<{ items?: Array<{ id?: string; label?: string }> }>(
-      apiKey,
-      FILTER_SYSTEM_PROMPT,
-      `Topic: ${topic}
-
-Items:
-${JSON.stringify(compactItems, null, 2)}`,
-    );
-
-    const keepIds = new Set(
-      (data.items || [])
-        .filter((decision) => decision.label === 'relevant' || decision.label === 'borderline')
-        .map((decision) => decision.id)
-        .filter(Boolean),
-    );
-
-    return keepIds.size > 0 ? items.filter((item) => keepIds.has(item.id)) : items;
-  } catch {
-    return items;
-  }
-}
-
-export async function summarizeResults<T extends BasicItem>(items: T[], topic: string, apiKey: string): Promise<T[]> {
-  try {
-    const compactItems = items.map((item) => ({
-      id: item.id,
-      url: item.url,
-      title: item.title,
-      text: item.text.replace(/\s+/g, ' ').trim().slice(0, 1000),
-      rawMarkdown: (item.rawMarkdown || '').replace(/\s+/g, ' ').trim().slice(0, 6000),
-    }));
-
-    const data = await callGeminiJson<{ items?: Array<{ id?: string; summary?: string }> }>(
-      apiKey,
-      SUMMARY_SYSTEM_PROMPT,
-      `Topic: ${topic}
-
-Items:
-${JSON.stringify(compactItems, null, 2)}`,
-    );
-
-    const summaries = new Map(
-      (data.items || [])
-        .filter((item) => item.id && item.summary)
-        .map((item) => [item.id as string, String(item.summary).trim()]),
-    );
-
-    return items.map((item) => ({
-      ...item,
-      text: summaries.get(item.id) || item.text,
-    }));
-  } catch {
-    return items;
   }
 }

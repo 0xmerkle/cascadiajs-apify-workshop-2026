@@ -80,6 +80,10 @@ Even failed page loads can still be useful because `searchResult` usually has th
 
 The raw `markdown` can be messy. It may include navigation, forms, cookie banners, or page footer links. That is why we do not return the raw RAG Web Browser output directly.
 
+An Actor can call another Actor. That means you can use a marketplace Actor as a building block, then add your own pre-processing or post-processing around it.
+
+In this workshop, RAG Web Browser does the hard part: Google search plus page extraction. Your Actor will add the custom logic around it: input handling, smarter search queries, normalization, deployment, and agent access.
+
 Our actor will turn this:
 
 ```text
@@ -92,7 +96,7 @@ into this:
 id, url, title, text, searchRank
 ```
 
-This is the tool we'll wrap. Your actor will call RAG Web Browser, get these results back, and add your own logic on top.
+RAG Web Browser is the tool we'll wrap. Your actor will call it, get these results back, and add your own logic on top.
 
 Try 2 or 3 more queries:
 

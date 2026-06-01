@@ -53,7 +53,7 @@ Each result usually includes:
 
 - `title`: source title
 - `url`: source URL
-- `text`: LLM summary from the Actor
+- `text`: normalized source text from the Actor
 - `rawMarkdown`: capped extracted source markdown for verification
 - `searchRank`: source rank from search
 
