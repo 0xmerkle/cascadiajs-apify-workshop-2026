@@ -81,6 +81,7 @@ Your RAG call should still use the helper from Lesson 2:
 ```ts
 const run = await client.actor('apify/rag-web-browser').call(
   createRagWebBrowserInput(query, 3),
+  { memory: 4096 },
 );
 ```
 
