@@ -70,6 +70,8 @@ Build this in stages. After each prompt, skim the code your agent wrote before m
 
 This gives the Actor its input handling, API client setup, and lifecycle.
 
+Copy and paste this prompt into your coding agent:
+
 ```text
 Read the AGENTS.md file in this project first. Follow its Apify Actor guidance while implementing this.
 
@@ -114,6 +116,8 @@ IMPORTS:
 
 Now your Actor calls another Actor and fetches that run's dataset.
 
+Copy and paste this prompt into your coding agent:
+
 ```text
 Update src/main.ts so it calls the "apify/rag-web-browser" marketplace Actor.
 
@@ -124,9 +128,11 @@ Update src/main.ts so it calls the "apify/rag-web-browser" marketplace Actor.
    const ragMaxResults = Math.max(maxResults * 2, 10);
    const run = await client.actor('apify/rag-web-browser').call(
      createRagWebBrowserInput(topic, ragMaxResults),
+     { memory: 4096 },
    );
 
    Do not invent a different RAG Web Browser input object. Use the helper.
+   Keep the { memory: 4096 } option. RAG Web Browser needs enough memory to run reliably on free Apify accounts.
 
    The actor input maxResults is the final number of clean results to return.
    ragMaxResults is the number of raw pages to fetch. Fetch extra pages because some pages fail, duplicate, or get filtered out.
@@ -148,6 +154,8 @@ IMPORTS:
 ### 2.3 Normalize results
 
 RAG Web Browser output is raw. Normalize it into the shape your API caller and agent skill will expect.
+
+Copy and paste this prompt into your coding agent:
 
 ```text
 Add a normalizeItem helper to src/main.ts.
@@ -195,6 +203,8 @@ Return this shape:
 
 Now remove duplicate URLs, limit the result count, and write clean items to the default dataset.
 
+Copy and paste this prompt into your coding agent:
+
 ```text
 Update src/main.ts to use the normalizeItem helper that is already defined locally in src/main.ts.
 
@@ -213,6 +223,8 @@ Then:
 
 Ask your agent to check the final code before you run it.
 
+Copy and paste this prompt into your coding agent:
+
 ```text
 Review src/main.ts for these details:
 
@@ -226,7 +238,7 @@ Review src/main.ts for these details:
 
 ## Step 3: Update the input schema
 
-Also give your agent this:
+Copy and paste this prompt into your coding agent:
 
 ```text
 Update .actor/INPUT_SCHEMA.json to define these input fields:
@@ -236,7 +248,9 @@ Update .actor/INPUT_SCHEMA.json to define these input fields:
 
 ## Step 4: Update the Actor details
 
-Your Actor name, title, and description will appear in Apify Console after you deploy. Give your agent this:
+Your Actor name, title, and description will appear in Apify Console after you deploy.
+
+Copy and paste this prompt into your coding agent:
 
 ```text
 Update .actor/actor.json with these Actor details:
